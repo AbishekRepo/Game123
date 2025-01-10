@@ -1,5 +1,5 @@
+import Hero from "@/components/ui/shared/Hero/Hero";
 import React from "react";
-import sampleData from "@/db/sample-data";
 
 export const metadata = {
   title: "Home",
@@ -8,7 +8,11 @@ export const metadata = {
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)); // test loader
 
 const page = () => {
-  return <div></div>;
+  return (
+    <div>
+      <Hero />
+    </div>
+  );
 };
 
 export default page;
