@@ -4,7 +4,7 @@
 
 @layer utilities {
   .wrapper {
-    @apply max-w-7xl lg:mx-auto p-5 md:px-10 w-full;
+    @apply max-w-7xl lg:mx-auto p-1 md:px-10 w-full;
   }
 
   .flex-start {
@@ -28,6 +28,21 @@
 
   .h3-bold {
     @apply font-bold text-xl lg:text-2xl;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-montserrat;
+  }
+
+  p,
+  span,
+  div {
+    @apply font-poppins;
   }
 }
 

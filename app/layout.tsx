@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Montserrat, Poppins } from "next/font/google";
 import "@/assets/styles/global.css";
 import { APP_NAME, APP_DESC, SERVER_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
@@ -15,7 +15,20 @@ export const metadata: Metadata = {
   metadataBase: new URL(SERVER_URL),
 };
 
-console.log(APP_NAME);
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-montserrat",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+// Initialize Poppins
+const poppins = Poppins({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-poppins",
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 export default function RootLayout({
   children,
@@ -24,7 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased`}>
+      <body
+        className={`${inter.className} antialiased ${montserrat.variable} ${poppins.variable}`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
