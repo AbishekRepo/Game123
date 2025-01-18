@@ -22,8 +22,8 @@ const Menu = () => {
           </Link>
         </Button>
         <Button asChild>
-          <Link href="/cart">
-            <UserIcon /> Signin
+          <Link href="/sign-in">
+            <UserIcon /> SignUp
           </Link>
         </Button>
       </nav>
