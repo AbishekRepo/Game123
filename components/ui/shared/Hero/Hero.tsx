@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../../button";
+import Link from "next/link";
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -65,7 +66,9 @@ const Hero = () => {
               <h1 className="text-3xl font-bold mb-2 shadow-black">
                 {slide.title}
               </h1>
-              <Button className="bg-yellow-300 font-bold">Play games</Button>
+              <Button className="bg-yellow-300 font-bold" asChild>
+                <Link href="/sign-in">play games</Link>
+              </Button>
             </div>
           </div>
         ))}
