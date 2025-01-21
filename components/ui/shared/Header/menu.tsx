@@ -23,7 +23,7 @@ const Menu = () => {
         </Button>
         <Button asChild>
           <Link href="/sign-in">
-            <UserIcon /> SignUp
+            <UserIcon /> Login
           </Link>
         </Button>
       </nav>
