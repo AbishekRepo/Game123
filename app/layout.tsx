@@ -3,6 +3,7 @@ import { Inter, Montserrat, Poppins } from "next/font/google";
 import "@/assets/styles/global.css";
 import { APP_NAME, APP_DESC, SERVER_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
+import { Providers } from "@/components/ui/shared/auth/session-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,19 +37,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} antialiased ${montserrat.variable} ${poppins.variable}`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
+    <Providers>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${inter.className} antialiased ${montserrat.variable} ${poppins.variable}`}
         >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </Providers>
   );
 }
