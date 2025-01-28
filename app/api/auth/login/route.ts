@@ -20,12 +20,14 @@ export async function POST(req: Request) {
     }
 
     // Verify password
-    const passwordValid = await bcrypt.compare(password, user.password);
-    if (!passwordValid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+    if (user.password) {
+      const passwordValid = await bcrypt.compare(password, user.password);
+      if (!passwordValid) {
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 401 }
+        );
+      }
     }
 
     // Update last login
