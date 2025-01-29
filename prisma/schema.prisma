@@ -60,6 +60,7 @@ model Bet {
   result     Float?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  gameTitle  String?
   user       User      @relation(fields: [userId], references: [id])
 
   @@map("bets")

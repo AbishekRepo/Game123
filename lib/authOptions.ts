@@ -33,12 +33,28 @@ export const authOptions = {
       return true;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, user }: { token: any; user: any }) {
+      if (user) {
+        token.id = user.id;
+        token.walletBalance = user.walletBalance; // Adding walletBalance to token
+      }
+      return token;
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, user }: { session: any; user: any }) {
       if (user) {
-        session.user.id = user.id; // Assign user ID to session if needed
-        session.user.email = user.email; // Ensure email is available in session
-        session.user.name = user.name; // Ensure name is available in session
-        session.user.walletBalance = user.walletBalance;
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id: user.id,
+            walletBalance: user.walletBalance,
+          },
+        };
+        // session.user.id = user.id; // Assign user ID to session if needed
+        // session.user.email = user.email; // Ensure email is available in session
+        // session.user.name = user.name; // Ensure name is available in session
+        // session.user.walletBalance = user.walletBalance;
       }
       return session;
     },
