@@ -8,18 +8,18 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String
-  email         String       @unique
-  password      String
-  walletBalance Float        @default(0)
-  role          UserRole     @default(USER)
-  createdAt     DateTime     @default(now())
-  lastLogin     DateTime     @updatedAt
+  email         String        @unique
+  walletBalance Float         @default(0)
+  role          UserRole      @default(USER)
+  createdAt     DateTime      @default(now())
+  lastLogin     DateTime      @updatedAt
+  password      String?
+  accounts      Account[]
+  sessions      Session[]
   bets          Bet[]
   transactions  Transaction[]
-  accounts      Account[]
-  sessions      Session[]   
 
   @@map("users")
 }
@@ -30,15 +30,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -51,6 +50,35 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Bet {
+  id         String    @id @default(cuid())
+  userId     String
+  gameId     String
+  betAmount  Float
+  multiplier Float
+  status     BetStatus @default(PENDING)
+  result     Float?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@map("bets")
+}
+
+model Transaction {
+  id        String            @id @default(cuid())
+  userId    String
+  type      TransactionType
+  amount    Float
+  status    TransactionStatus @default(PENDING)
+  metadata  Json?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  user      User              @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
+}
+
 enum UserRole {
   ADMIN
   DEVELOPER
@@ -58,40 +86,11 @@ enum UserRole {
   USER
 }
 
-model Bet {
-  id          String    @id @default(cuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  gameId      String
-  betAmount   Float
-  multiplier  Float
-  status      BetStatus @default(PENDING)
-  result      Float?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@map("bets")
-}
-
 enum BetStatus {
   PENDING
   WON
   LOST
   CANCELLED
-}
-
-model Transaction {
-  id        String            @id @default(cuid())
-  userId    String
-  user      User             @relation(fields: [userId], references: [id])
-  type      TransactionType
-  amount    Float
-  status    TransactionStatus @default(PENDING)
-  metadata  Json?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-
-  @@map("transactions")
 }
 
 enum TransactionType {
