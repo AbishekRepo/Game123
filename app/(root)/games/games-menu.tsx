@@ -1,3 +1,4 @@
+// GamesMenu.tsx
 "use client";
 
 import React, { useEffect } from "react";
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import BetDialog from "./bet-dialog";
 
-interface games {
+interface Game {
   id: string;
   title: string;
   description: string;
@@ -20,15 +21,19 @@ interface games {
   link: string;
 }
 
-interface Game {
-  games: games[];
+interface GamesMenuProps {
+  games: Game[];
 }
 
-const GamesMenu: React.FC<Game> = ({ games }) => {
+const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
   const { status } = useSession();
   const router = useRouter();
 
-  async function handlePlaceBet(gameId: string, betAmount: number) {
+  async function handlePlaceBet(
+    gameId: string,
+    betAmount: number,
+    gameTitle: string
+  ) {
     try {
       const response = await fetch("/api/game/bet", {
         method: "POST",
@@ -38,12 +43,19 @@ const GamesMenu: React.FC<Game> = ({ games }) => {
         body: JSON.stringify({
           gameId,
           betAmount,
+          gameTitle,
+          multiplier: 2.0,
         }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error! Status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {
-        router.push(`/game/${gameId}`);
+        router.push(`/games/${gameId}`);
       } else {
         alert(data.message);
       }
@@ -54,46 +66,33 @@ const GamesMenu: React.FC<Game> = ({ games }) => {
   }
 
   useEffect(() => {
-    // Redirect to sign-in if not authenticated
     if (status === "unauthenticated") {
       router.push("/sign-in");
     }
   }, [status, router]);
 
   if (status === "loading") {
-    return <div>Loading...</div>; // Show a loading indicator while checking authentication
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
       {games.map((game) => (
-        <Card
-          key={game.id}
-          className="hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden BG"
-        >
-          <CardHeader className=" p-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold">
-                {game.title}
-              </CardTitle>
-              <div className="text-2xl">{game.icon}</div>
-            </div>
+        <Card key={game.id} className="flex flex-col">
+          <CardHeader>
+            <CardTitle>{game.title}</CardTitle>
+            <div className="text-4xl">{game.icon}</div>
           </CardHeader>
-          <CardContent className="p-4">
-            <p className="text-gray-600">{game.description}</p>
+          <CardContent>
+            <p>{game.description}</p>
           </CardContent>
-          <CardFooter className="p-4">
-            {/* <Button
-              variant="outline"
-              className="w-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-300"
-              onClick={() => router.push(game.link)}
-            >
-              Play Now
-            </Button> */}
+          <CardFooter>
             <BetDialog
               gameId={game.id}
               gameTitle={game.title}
-              onConfirm={(betAmount) => handlePlaceBet(game.id, betAmount)}
+              onConfirm={(betAmount) =>
+                handlePlaceBet(game.id, betAmount, game.title)
+              }
             />
           </CardFooter>
         </Card>

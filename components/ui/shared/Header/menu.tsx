@@ -20,6 +20,7 @@ const Menu = () => {
     signOut({ callbackUrl: "/sign-in" });
   };
 
+  const userfirstname = session?.user && session?.user?.name.split(" ")[0];
   console.log(session?.user);
 
   return (
@@ -29,9 +30,7 @@ const Menu = () => {
         {session ? (
           <div className="text-sm font-medium text-gray-700">
             Welcome{" "}
-            <span className="font-semibold text-white">
-              {session.user?.name}
-            </span>
+            <span className="font-semibold text-white">{userfirstname}</span>
           </div>
         ) : null}
         {session ? (
@@ -58,7 +57,7 @@ const Menu = () => {
               <div className="text-sm font-medium text-gray-700">
                 Welcome{" "}
                 <span className="font-semibold text-white">
-                  {session.user?.name}
+                  {userfirstname}
                 </span>
               </div>
             ) : null}
