@@ -48,4 +48,5 @@ export const authOptions = {
     signOut: "sign-out",
     error: "/auth/error",
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
