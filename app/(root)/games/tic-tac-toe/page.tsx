@@ -3,13 +3,17 @@
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import WinLosePopup from "@/components/ui/shared/win-lose-popup/win-lose-popup";
 
 const TicTacToe = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isUserTurn, setIsUserTurn] = useState(true);
-  const [winner, setWinner] = useState(null);
+  const [winner, setWinner] = useState<string | null>(null);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [player, setPlayer] = useState("");
 
   const { data: session, status } = useSession();
+  const [firstname] = session?.user.name.split(" ") || "player1";
   const router = useRouter();
 
   useEffect(() => {
@@ -18,8 +22,7 @@ const TicTacToe = () => {
     }
   }, [isUserTurn, winner]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const checkWinner = (newBoard: any) => {
+  const checkWinner = (newBoard: (string | null)[]) => {
     const winningCombinations = [
       [0, 1, 2],
       [3, 4, 5],
@@ -54,7 +57,9 @@ const TicTacToe = () => {
 
     if (gameWinner) {
       setWinner(gameWinner);
+      setIsGameOver(true);
       if (gameWinner === "X") {
+        setPlayer(firstname || "Player 1");
         rewardWinner();
       }
     } else {
@@ -63,7 +68,7 @@ const TicTacToe = () => {
   };
 
   const botMove = () => {
-    const emptyIndices = board.reduce(
+    const emptyIndices = board.reduce<number[]>(
       (acc, cell, index) => (cell === null ? [...acc, index] : acc),
       []
     );
@@ -78,6 +83,8 @@ const TicTacToe = () => {
     const gameWinner = checkWinner(newBoard);
     if (gameWinner) {
       setWinner(gameWinner);
+      setPlayer("Player 2");
+      setIsGameOver(true);
     } else {
       setIsUserTurn(true);
     }
@@ -88,7 +95,10 @@ const TicTacToe = () => {
       await fetch("/api/game/reward", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: session?.user?.email, gameStatus: "" }),
+        body: JSON.stringify({
+          email: session?.user?.email,
+          gameStatus: winner,
+        }),
       });
     } catch (error) {
       console.error("Failed to update wallet:", error);
@@ -101,6 +111,10 @@ const TicTacToe = () => {
     }
   }, [status, router]);
 
+  // const handlePopupClose = () => {
+  //   router.push("/games"); // Navigate to the games menu when popup closes
+  // };
+
   if (status === "loading") {
     return <div>Loading...</div>;
   }
@@ -112,18 +126,20 @@ const TicTacToe = () => {
         {board.map((cell, index) => (
           <button
             key={index}
-            className="w-32 h-32 text-4xl font-bold bg-slate-900 border border-gray-300 rounded-lg shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-gray-200"
+            className="w-28 h-28 md:w-32 md:h-32 text-4xl font-bold bg-slate-900 border border-gray-300 rounded-lg shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 active:bg-gray-200"
             onClick={() => handleMove(index)}
           >
             {cell}
           </button>
         ))}
       </div>
-      {winner && (
-        <h3 className="text-2xl font-semibold mt-4">
-          {winner === "Draw" ? "It's a Draw!" : `${winner} Wins!`}
-        </h3>
-      )}
+
+      {/* Popup to show game result */}
+      <WinLosePopup
+        isGameOver={isGameOver}
+        isDraw={winner === "Draw"}
+        player={player || "player 1"}
+      ></WinLosePopup>
     </div>
   );
 };
