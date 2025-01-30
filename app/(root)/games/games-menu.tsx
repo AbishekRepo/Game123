@@ -14,12 +14,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import BetDialog from "./bet-dialog";
+import Image from "next/image";
 
 interface Game {
   id: string;
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon: string;
   link: string;
 }
 
@@ -103,8 +104,8 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
           </AlertTitle>
           <AlertDescription className="flex items-center justify-between text-red-500">
             <span>You don&apos;t have enough funds to place this bet.</span>
-            <Button variant="outline" onClick={handleAddFunds} className="ml-4">
-              Add Funds
+            <Button onClick={handleAddFunds} className="ml-4">
+              Add Rupees
             </Button>
           </AlertDescription>
         </Alert>
@@ -113,13 +114,20 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {games.map((game) => (
           <Card key={game.id} className="flex flex-col">
-            <CardHeader>
-              <CardTitle>{game.title}</CardTitle>
-              <div className="text-4xl">{game.icon}</div>
-            </CardHeader>
-            <CardContent>
-              <p>{game.description}</p>
-            </CardContent>
+            <div className="flex flex-col items-center">
+              <CardHeader>
+                <CardTitle>{game.title}</CardTitle>
+                <Image
+                  src={game.icon}
+                  alt={game.title}
+                  height={70}
+                  width={70}
+                />
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{game.description}</p>
+              </CardContent>
+            </div>
             <CardFooter>
               <BetDialog
                 gameId={game.id}
