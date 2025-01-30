@@ -1,4 +1,3 @@
-import { Gamepad2, Coins, Dice3 } from "lucide-react";
 import GamesMenu from "./games-menu";
 
 const games = [
