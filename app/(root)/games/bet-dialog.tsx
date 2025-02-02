@@ -74,7 +74,7 @@ const BetDialog: React.FC<BetDialogProps> = ({
               variant={amount === betAmount ? "default" : "outline"}
               className="w-full"
             >
-              ${amount}
+              {amount}
             </Button>
           ))}
         </div>
