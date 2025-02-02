@@ -1,8 +1,10 @@
+"use client";
+
 import React from "react";
 import ModeToggle from "./mode-toggle";
 import { Button } from "../../button";
 import Link from "next/link";
-import { EllipsisVertical, ShoppingCart, UserIcon } from "lucide-react";
+import { EllipsisVertical, UserIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -10,22 +12,38 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../../sheet";
+import { useSession, signOut } from "next-auth/react";
 
 const Menu = () => {
+  const { data: session } = useSession();
+  const handleLogout = () => {
+    signOut({ callbackUrl: "/sign-in" });
+  };
+
+  const userfirstname = session?.user && session?.user?.name.split(" ")[0];
+  console.log(session?.user);
+
   return (
     <div className="flex justify-end gap-3">
-      <nav className="hidden md:flex w-full max-w-xs gap-1">
+      <nav className="hidden md:flex w-full max-w-xs gap-1 items-center gap-3">
         <ModeToggle></ModeToggle>
-        <Button asChild variant="ghost">
-          <Link href="/cart">
-            <ShoppingCart /> Cart
-          </Link>
-        </Button>
-        <Button asChild>
-          <Link href="/sign-in">
-            <UserIcon /> Login
-          </Link>
-        </Button>
+        {session ? (
+          <div className="text-sm font-medium text-gray-700">
+            Welcome{" "}
+            <span className="font-semibold text-white">{userfirstname}</span>
+          </div>
+        ) : null}
+        {session ? (
+          <Button onClick={handleLogout}>
+            <UserIcon /> Logout
+          </Button>
+        ) : (
+          <Button asChild>
+            <Link href="/sign-in">
+              <UserIcon /> Login
+            </Link>
+          </Button>
+        )}
       </nav>
       <nav className="md:hidden">
         <Sheet>
@@ -35,16 +53,25 @@ const Menu = () => {
           <SheetContent className="flex flex-col items-start">
             <SheetTitle>Menu</SheetTitle>
             <ModeToggle></ModeToggle>
-            <Button asChild variant="ghost">
-              <Link href="/cart">
-                <ShoppingCart /> Cart
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link href="/cart">
-                <UserIcon /> Signin
-              </Link>
-            </Button>
+            {session ? (
+              <div className="text-sm font-medium text-gray-700">
+                Welcome{" "}
+                <span className="font-semibold text-white">
+                  {userfirstname}
+                </span>
+              </div>
+            ) : null}
+            {session ? (
+              <Button onClick={handleLogout}>
+                <UserIcon /> Logout
+              </Button>
+            ) : (
+              <Button asChild>
+                <Link href="/sign-in">
+                  <UserIcon /> Login
+                </Link>
+              </Button>
+            )}
             <SheetDescription></SheetDescription>
           </SheetContent>
         </Sheet>
