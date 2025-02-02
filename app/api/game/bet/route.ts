@@ -103,6 +103,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       bet,
+      newBalance: user.walletBalance,
     });
   } catch (error) {
     console.error("Detailed error information:", error);

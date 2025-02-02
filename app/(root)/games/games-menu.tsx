@@ -15,6 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import BetDialog from "./bet-dialog";
 import Image from "next/image";
+import { useWalletStore } from "@/store/useWalletStore";
 
 interface Game {
   id: string;
@@ -33,6 +34,8 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [showInsufficientBalance, setShowInsufficientBalance] = useState(false);
+
+  const setBalance = useWalletStore((state) => state.setBalance);
 
   async function handlePlaceBet(
     gameId: string,
@@ -56,6 +59,7 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        setBalance(data.newBalance);
         router.push(`/games/${gameId}`);
       } else if (
         response.status === 400 &&
