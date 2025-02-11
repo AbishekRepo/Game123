@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import WinLosePopup from "@/components/ui/shared/win-lose-popup/win-lose-popup";
+import { useToast } from "@/hooks/use-toast";
+import RefreshProtection from "@/components/ui/shared/refresh-protect/refresh-protection";
 
 const TicTacToe = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -11,10 +13,61 @@ const TicTacToe = () => {
   const [winner, setWinner] = useState<string | null>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [player, setPlayer] = useState("");
+  interface Bet {
+    id: string;
+    // Add other properties if needed
+  }
+
+  const [activeBet, setActiveBet] = useState<Bet | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { data: session, status } = useSession();
   const [firstname] = session?.user.name.split(" ") || "player1";
   const router = useRouter();
+  const { toast } = useToast();
+  const gameTitle = "tic-tac-toe";
+
+  useEffect(() => {
+    const validateGame = async () => {
+      try {
+        const response = await fetch(`/api/game/user-bet?game=${gameTitle}`);
+        const data = await response.json();
+
+        setActiveBet(data.activeBet);
+        setIsLoading(false);
+
+        // Start session timeout
+        const timeout = setTimeout(() => {
+          toast({
+            title: "Session Expired",
+            description: "Game session has expired",
+          });
+          router.push("/games");
+        }, 30 * 60 * 1000); // 30 minutes
+
+        return () => clearTimeout(timeout);
+      } catch (error) {
+        console.error(error);
+        router.push("/games");
+      }
+    };
+
+    validateGame();
+  }, [gameTitle, router, toast]);
+
+  useEffect(() => {
+    if (!isGameOver && !isLoading) {
+      localStorage.setItem(
+        "gameState",
+        JSON.stringify({
+          board,
+          isUserTurn,
+          timestamp: Date.now(),
+          betId: activeBet?.id,
+        })
+      );
+    }
+  }, [board, isUserTurn, isGameOver, isLoading, activeBet]);
 
   useEffect(() => {
     if (!isUserTurn && !winner) {
@@ -53,14 +106,14 @@ const TicTacToe = () => {
     const newBoard = [...board];
     newBoard[index] = "X";
     setBoard(newBoard);
-    const gameWinner = checkWinner(newBoard);
 
+    const gameWinner = checkWinner(newBoard);
     if (gameWinner) {
       setWinner(gameWinner);
       setIsGameOver(true);
       if (gameWinner === "X") {
         setPlayer(firstname || "Player 1");
-        rewardWinner();
+        rewardWinner(gameWinner);
       }
     } else {
       setIsUserTurn(false);
@@ -85,23 +138,35 @@ const TicTacToe = () => {
       setWinner(gameWinner);
       setPlayer("Player 2");
       setIsGameOver(true);
+      rewardWinner(gameWinner);
     } else {
       setIsUserTurn(true);
     }
   };
 
-  const rewardWinner = async () => {
+  const rewardWinner = async (gameWinner: string) => {
     try {
-      await fetch("/api/game/reward", {
+      const response = await fetch("/api/game/reward", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: session?.user?.email,
-          gameStatus: winner,
+          gameStatus: gameWinner === "X" ? "WON" : "LOST",
+          betId: activeBet?.id,
         }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to update game result");
+      }
+
+      localStorage.removeItem("gameState");
     } catch (error) {
       console.error("Failed to update wallet:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update game result",
+      });
     }
   };
 
@@ -110,10 +175,6 @@ const TicTacToe = () => {
       router.push("/sign-in");
     }
   }, [status, router]);
-
-  // const handlePopupClose = () => {
-  //   router.push("/games"); // Navigate to the games menu when popup closes
-  // };
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -140,6 +201,7 @@ const TicTacToe = () => {
         isDraw={winner === "Draw"}
         player={player || "player 1"}
       ></WinLosePopup>
+      <RefreshProtection betId={activeBet?.id} />
     </div>
   );
 };
