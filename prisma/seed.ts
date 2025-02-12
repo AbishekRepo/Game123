@@ -39,8 +39,6 @@ async function main() {
       data: user,
     });
   }
-
-  console.log("Seed data created successfully");
 }
 
 main()

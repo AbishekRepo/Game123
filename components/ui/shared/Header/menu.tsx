@@ -16,18 +16,17 @@ import { useSession, signOut } from "next-auth/react";
 import WalletBalance from "./Wallet-Balance";
 
 const Menu = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const handleLogout = () => {
     signOut({ callbackUrl: "/sign-in" });
   };
 
   const userfirstname = session?.user && session?.user?.name.split(" ")[0];
-  console.log(session?.user);
 
   return (
     <div className="flex justify-between gap-3 ml-4">
       <nav className="hidden md:flex w-full max-w-xs items-center justify-center gap-4">
-        <WalletBalance />
+        {status === "authenticated" ? <WalletBalance /> : null}
         {/* <ModeToggle></ModeToggle> */}
         {session ? (
           <div className="text-xs font-medium text-gray-700 text-center flex flex-col">
@@ -66,9 +65,11 @@ const Menu = () => {
                 </span>
               </div>
             ) : null}
-            <div className="md:hidden">
-              <WalletBalance title="Money" buttonText="add" />
-            </div>
+            {status === "authenticated" ? (
+              <div className="md:hidden">
+                <WalletBalance title="Money" buttonText="add" />
+              </div>
+            ) : null}
             {session ? (
               <Button onClick={handleLogout}>
                 <UserIcon /> Logout
