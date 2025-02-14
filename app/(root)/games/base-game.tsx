@@ -1,4 +1,3 @@
-// base-game.tsx
 "use client";
 
 import { useSession } from "next-auth/react";
@@ -63,14 +62,16 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
 
     const delay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       toast({
         title: "Player 2 Joined",
         description: "Game is starting now!",
       });
       setGameStarted(true);
     }, delay);
-  }, [toast]);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleGameComplete = async (result: GameResult) => {
     setWinner(result.winner);

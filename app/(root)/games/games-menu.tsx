@@ -131,7 +131,7 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
         {games.map((game) => (
           <Card key={game.id} className="flex flex-col">
             <div className="flex flex-col items-center">
-              <CardHeader>
+              <CardHeader className="items-center">
                 <CardTitle>{game.title}</CardTitle>
                 <Image
                   src={game.icon}

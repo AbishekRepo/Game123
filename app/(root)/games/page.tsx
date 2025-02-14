@@ -2,6 +2,13 @@ import GamesMenu from "./games-menu";
 
 const games = [
   {
+    id: "roulette",
+    title: "Spinning Wheel",
+    description: "Classic casino wheel game",
+    icon: "/images/Roulette.png",
+    link: "/games/roulette",
+  },
+  {
     id: "tic-tac-toe",
     title: "Tic Tac Toe",
     description: "Strategy game for two players",
@@ -14,13 +21,6 @@ const games = [
     description: "Simple heads or tails game",
     icon: "/images/Toss.png",
     link: "/games/coin-toss",
-  },
-  {
-    id: "roulette",
-    title: "Roulette",
-    description: "Classic casino wheel game",
-    icon: "/images/Roulette.png",
-    link: "/games/roulette",
   },
   // {
   //   id: "hangman",
