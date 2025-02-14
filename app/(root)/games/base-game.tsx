@@ -21,6 +21,7 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
   const [firstname] = session?.user?.name?.split(" ") || ["player 1"];
   const router = useRouter();
   const { toast } = useToast();
+  const isSpinWheelGame = gameTitle === "spin-wheel";
 
   useEffect(() => {
     const validateGame = async () => {
@@ -56,21 +57,28 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
 
   useEffect(() => {
     toast({
-      title: "Waiting for Player 2",
-      description: "Game will begin once Player 2 joins.",
+      title: isSpinWheelGame
+        ? "Waiting for others to choose..pls wait"
+        : "Waiting for Player 2",
+      description: isSpinWheelGame
+        ? ""
+        : "Game will begin once Player 2 joins.",
     });
 
-    const delay = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
+    const delay = Math.floor(Math.random() * (5000 - 3000 + 1)) + 3000;
 
     const timer = setTimeout(() => {
       toast({
-        title: "Player 2 Joined",
+        title: isSpinWheelGame
+          ? "Done. please choose your color and spin"
+          : "Player 2 Joined",
         description: "Game is starting now!",
       });
       setGameStarted(true);
     }, delay);
 
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleGameComplete = async (result: GameResult) => {
@@ -116,6 +124,7 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
         isGameOver={isGameOver}
         isDraw={isDraw}
         player={winner || ""}
+        customMessage={gameTitle === "spin-wheel" ? "Thanks for playing" : ""}
       />
       <RefreshProtection betId={activeBet?.id} />
     </div>
