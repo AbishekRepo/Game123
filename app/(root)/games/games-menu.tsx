@@ -43,6 +43,18 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
     gameTitle: string
   ) {
     try {
+      const betCheck = await fetch(`/api/game/user-bet?game=${gameTitle}`);
+      const betData = await betCheck.json();
+
+      if (betData.activeBet) {
+        toast({
+          title: "Error",
+          description: "You already have an active bet for this game",
+        });
+        router.push(`/games/${gameId}`);
+        return;
+      }
+
       const response = await fetch("/api/game/bet", {
         method: "POST",
         headers: {
@@ -86,7 +98,7 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
   }
 
   function handleAddFunds() {
-    router.push("/wallet/add-funds"); // Replace with your actual add funds route
+    router.push("/wallet/add-funds");
   }
 
   useEffect(() => {
@@ -119,13 +131,14 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
         {games.map((game) => (
           <Card key={game.id} className="flex flex-col">
             <div className="flex flex-col items-center">
-              <CardHeader>
+              <CardHeader className="items-center">
                 <CardTitle>{game.title}</CardTitle>
                 <Image
                   src={game.icon}
                   alt={game.title}
                   height={70}
                   width={70}
+                  priority
                 />
               </CardHeader>
               <CardContent>
