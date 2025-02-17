@@ -7,6 +7,7 @@ import WinLosePopup from "@/components/ui/shared/win-lose-popup/win-lose-popup";
 import { useToast } from "@/hooks/use-toast";
 import RefreshProtection from "@/components/ui/shared/refresh-protect/refresh-protection";
 import { BaseGameProps, Bet, GameResult } from "../../../types/game";
+import { useWalletStore } from "@/store/useWalletStore";
 
 const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
   const [isGameOver, setIsGameOver] = useState(false);
@@ -22,6 +23,7 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
   const router = useRouter();
   const { toast } = useToast();
   const isSpinWheelGame = gameTitle === "spin-wheel";
+  const { fetchBalance } = useWalletStore();
 
   useEffect(() => {
     const validateGame = async () => {
@@ -100,6 +102,7 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
       if (!response.ok) {
         throw new Error("Failed to update game result");
       }
+      fetchBalance();
     } catch (error) {
       console.error("Failed to update wallet:", error);
       toast({ title: "Error", description: "Failed to update game result" });
