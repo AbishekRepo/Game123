@@ -13,6 +13,7 @@ interface WinLoseProps {
   handlePopupClose?: () => void;
   player?: string;
   isDraw?: boolean;
+  customMessage?: string;
 }
 
 const WinLosePopup: React.FC<WinLoseProps> = ({
@@ -20,6 +21,7 @@ const WinLosePopup: React.FC<WinLoseProps> = ({
   handlePopupClose,
   player = "player1",
   isDraw = false,
+  customMessage,
 }) => {
   const router = useRouter();
   return (
@@ -28,7 +30,14 @@ const WinLosePopup: React.FC<WinLoseProps> = ({
       onOpenChange={handlePopupClose || (() => router.push("/games"))}
     >
       <DialogContent aria-label="Game Result" aria-describedby="game-result">
-        <DialogTitle>{isDraw ? "It's a Draw!" : `${player} Wins!`}</DialogTitle>
+        {customMessage ? (
+          <DialogTitle>{customMessage}</DialogTitle>
+        ) : (
+          <DialogTitle>
+            {isDraw ? "It's a Draw!" : `${player} Wins!`}
+          </DialogTitle>
+        )}
+
         <DialogFooter>
           <Button onClick={handlePopupClose || (() => router.push("/games"))}>
             OK

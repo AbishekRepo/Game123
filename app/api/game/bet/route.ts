@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    console.log("Session data:", session);
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -21,7 +20,6 @@ export async function POST(req: Request) {
     let body;
     try {
       body = await req.json();
-      console.log("Request body:", body);
     } catch (parseError) {
       return NextResponse.json(
         {
@@ -99,7 +97,6 @@ export async function POST(req: Request) {
     //   },
     // });
 
-    console.log("Bet created successfully:", bet);
     return NextResponse.json({
       success: true,
       bet,
