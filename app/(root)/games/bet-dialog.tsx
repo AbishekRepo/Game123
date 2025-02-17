@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import GameRules from "@/app/(root)/games/game-rules";
 
 interface BetDialogProps {
   gameId: string;
@@ -31,7 +32,6 @@ const BetDialog: React.FC<BetDialogProps> = ({
   const [open, setOpen] = useState(false);
 
   const defaultBetAmounts = [5, 10, 20, 50];
-
   async function handleConfirmBet() {
     if (betAmount <= 0) {
       alert("Please enter a valid bet amount.");
@@ -89,6 +89,8 @@ const BetDialog: React.FC<BetDialogProps> = ({
             placeholder="Enter custom amount"
           />
         </div>
+
+        <GameRules game={gameTitle} />
 
         <DialogFooter>
           <Button onClick={handleConfirmBet} disabled={isLoading}>
