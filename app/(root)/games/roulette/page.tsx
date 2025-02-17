@@ -96,7 +96,7 @@ const SpinWheelUI = ({ onGameComplete, isDisabled, username }: GameUIProps) => {
   return (
     <div className="flex flex-col items-center gap-8">
       {/* Spinner Container */}
-      <div className="relative w-[340px] h-[340px] md:w-[410px] md:h-[410px]">
+      <div className="relative w-[340px] h-[340px] md:w-[410px] md:h-[340px]">
         {/* Wheel */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div ref={wheelRef}>

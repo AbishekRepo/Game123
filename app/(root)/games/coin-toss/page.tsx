@@ -9,10 +9,11 @@ const CoinTossUI = ({ onGameComplete, isDisabled, username }: GameUIProps) => {
   const [userChoice, setUserChoice] = useState<"Heads" | "Tails" | null>(null);
   const [coinResult, setCoinResult] = useState<"Heads" | "Tails" | null>(null);
   const [isFlipping, setIsFlipping] = useState<boolean>(false); // Track flipping state
+  const [gameOver, setGameOver] = useState<boolean>(false);
   const coinRef = useRef<HTMLDivElement>(null);
 
   const flipCoin = () => {
-    if (!userChoice || !coinRef.current || isFlipping) return;
+    if (!userChoice || !coinRef.current || isFlipping || gameOver) return;
 
     // Disable buttons during animation
     setIsFlipping(true);
@@ -28,6 +29,7 @@ const CoinTossUI = ({ onGameComplete, isDisabled, username }: GameUIProps) => {
       onComplete: () => {
         // Update the result after the animation completes
         setCoinResult(result);
+        setGameOver(true);
 
         // Trigger game completion
         setTimeout(() => {
@@ -85,7 +87,7 @@ const CoinTossUI = ({ onGameComplete, isDisabled, username }: GameUIProps) => {
       <button
         className="px-6 py-3 bg-green-600 text-white rounded-lg text-lg font-bold disabled:opacity-50"
         onClick={flipCoin}
-        disabled={!userChoice || isDisabled || isFlipping}
+        disabled={!userChoice || isDisabled || isFlipping || gameOver}
       >
         Flip Coin
       </button>
