@@ -23,7 +23,9 @@ const Header = () => {
             <span className="md:hidden ml-3 font-bold text-xl">{APP_NAME}</span>
           </Link>
         </div>
-        <Menu />
+        <div className="flex items-center">
+          <Menu />
+        </div>
       </div>
     </header>
   );

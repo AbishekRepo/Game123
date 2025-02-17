@@ -41,26 +41,24 @@ const WalletBalance = ({
   }
 
   return (
-    <Card className="rounded-2xl shadow-md pl-2">
-      <CardContent className="flex items-center p-0">
-        <div className="flex gap-1">
-          <div className="flex items-center space-x-2">
-            {title ? (
-              <p className="text-xs">{title}</p>
-            ) : (
-              <p className="text-xs">Money</p>
-            )}
-            <span className="text-lg md:text-sm font-semibold">
-              {balance?.toFixed(0)} &#8377;
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            className=" bg-green-600 hover:bg-green-700 text-white p-2 rounded-full"
-          >
-            {buttonText ? buttonText : "+"}
-          </Button>
+    <Card className="rounded-2xl shadow-md border-none">
+      <CardContent className="flex items-center justify-between p-2">
+        <div className="flex items-center gap-2 whitespace-nowrap px-2">
+          {title ? (
+            <p className="text-xs">{title}</p>
+          ) : (
+            <p className="text-xs">Money</p>
+          )}
+          <span className="text-lg md:text-sm font-semibold">
+            {balance?.toFixed(0)} &#8377;
+          </span>
         </div>
+        <Button
+          variant="ghost"
+          className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-[20px]"
+        >
+          {buttonText ? buttonText : "+"}
+        </Button>
       </CardContent>
     </Card>
   );

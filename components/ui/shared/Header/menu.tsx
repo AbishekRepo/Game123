@@ -59,7 +59,7 @@ const Menu = () => {
             <SheetTitle>Menu</SheetTitle>
             {session ? (
               <div className="text-sm font-medium text-gray-700">
-                Welcome{" "}
+                Hi{" "}
                 <span className="font-semibold text-white">
                   {userfirstname}
                 </span>
