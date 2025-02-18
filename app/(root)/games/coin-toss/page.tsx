@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { GameUIProps } from "../../../../types/game";
 import BaseGame from "../base-game";
 import { gsap } from "gsap";
+import Image from "next/image";
 
 const CoinTossUI = ({ onGameComplete, isDisabled, username }: GameUIProps) => {
   const [userChoice, setUserChoice] = useState<"Heads" | "Tails" | null>(null);
@@ -51,13 +52,21 @@ const CoinTossUI = ({ onGameComplete, isDisabled, username }: GameUIProps) => {
       <div className="relative w-32 h-32">
         <div
           ref={coinRef}
-          className="w-full h-full bg-yellow-500 rounded-full flex items-center justify-center text-white text-lg font-bold"
+          className="w-full h-full rounded-full flex items-center justify-center"
           style={{
             transformStyle: "preserve-3d",
             backfaceVisibility: "hidden",
           }}
         >
-          {coinResult || "Coin"}
+          <Image
+            src={
+              coinResult === "Heads" ? "/images/heads.png" : "/images/Tails.png"
+            }
+            width={100}
+            height={100}
+            alt={coinResult || "Coin"}
+            className="w-full h-full rounded-full"
+          />
         </div>
       </div>
 

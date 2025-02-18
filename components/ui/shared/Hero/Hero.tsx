@@ -59,6 +59,7 @@ const Hero = () => {
               className="w-full h-full blur-sm rounded-lg object-cover md:object-fill"
               height={960}
               width={1920}
+              priority
             />
 
             {/* Content */}
