@@ -5,9 +5,8 @@ import React, { useEffect } from "react";
 import { WalletIcon } from "lucide-react";
 import { useWalletStore } from "@/store/useWalletStore";
 import { Skeleton } from "@/components/ui/skeleton";
-// import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import AddFunds from "../../addfunds-popup";
 
 const WalletBalance = ({
   title = "",
@@ -53,12 +52,7 @@ const WalletBalance = ({
             {balance?.toFixed(0)} &#8377;
           </span>
         </div>
-        <Button
-          variant="ghost"
-          className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-[20px]"
-        >
-          {buttonText ? buttonText : "+"}
-        </Button>
+        <AddFunds buttonText={buttonText} />
       </CardContent>
     </Card>
   );
