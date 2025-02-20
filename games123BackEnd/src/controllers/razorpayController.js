@@ -86,7 +86,7 @@ exports.OrderValidate = async (req, res) => {
   if (digest !== razorpay_signature) {
     return res.status(400).json({ msg: "Transaction is not legit!" });
   }
-
+console.log(razorpay_order_id,razorpay_payment_id, "RAZORPAY")
   res.json({
     msg: "success",
     orderId: razorpay_order_id,
