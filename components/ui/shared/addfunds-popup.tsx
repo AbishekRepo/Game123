@@ -1,3 +1,5 @@
+"use client";
+import Script from "next/script";
 import React, { useState } from "react";
 import {
   Dialog,
@@ -99,7 +101,8 @@ const AddFunds: React.FC<AddFundsProps> = ({ buttonText }) => {
         color: "#3399cc",
       },
     };
-    var rzp1 = new window.Razorpay(options);
+
+    const rzp1 = new (window as any).Razorpay(options);
     rzp1.on("payment.failed", function (response:any) {
       alert(response.error.code);
       alert(response.error.description);
@@ -132,6 +135,10 @@ const AddFunds: React.FC<AddFundsProps> = ({ buttonText }) => {
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-3 py-6">
+        <Script
+        type="text/javascript"
+        src="https://checkout.razorpay.com/v1/checkout.js"
+      />
           {defaultAmounts.map((defaultAmount) => (
             <div key={defaultAmount} className="relative">
               <Button
