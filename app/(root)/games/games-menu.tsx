@@ -43,6 +43,7 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
     gameTitle: string
   ) {
     try {
+      sessionStorage.setItem("activeBet", "true");
       const betCheck = await fetch(`/api/game/user-bet?game=${gameTitle}`);
       const betData = await betCheck.json();
 
@@ -89,6 +90,10 @@ const GamesMenu: React.FC<GamesMenuProps> = ({ games }) => {
         });
       }
     } catch (error) {
+      const activeBet = sessionStorage.getItem("activeBet") || null;
+      if (activeBet) {
+        sessionStorage.removeItem("activeBet");
+      }
       console.error(error);
       toast({
         title: "Error",
