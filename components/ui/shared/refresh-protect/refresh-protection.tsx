@@ -19,6 +19,10 @@ const RefreshProtection = ({ betId }: RefreshProtectionProps) => {
 
     const handleUnload = async () => {
       try {
+        const activeBet = sessionStorage.getItem("activeBet") || null;
+        if (activeBet) {
+          sessionStorage.removeItem("activeBet");
+        }
         // Update bet status to LOST
         await fetch("/api/game/forfeit", {
           method: "POST",

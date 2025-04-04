@@ -84,6 +84,7 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
   }, []);
 
   const handleGameComplete = async (result: GameResult) => {
+    sessionStorage.removeItem("activeBet");
     setWinner(result.winner);
     setIsDraw(result.gameStatus === "DRAW");
     setIsGameOver(true);
@@ -108,6 +109,17 @@ const BaseGame = ({ gameTitle, GameUI }: BaseGameProps) => {
       toast({ title: "Error", description: "Failed to update game result" });
     }
   };
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("activeBet")) {
+      router.push("/games");
+      toast({
+        title: "Invalid Action",
+        description:
+          "You must place a bet before playing the game,pls select a game and Place bet.",
+      });
+    }
+  }, [router, toast]);
 
   if (status === "loading" || isLoading) {
     return <div>Loading...</div>;
